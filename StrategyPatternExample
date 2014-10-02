@@ -19,6 +19,7 @@ namespace StrategyPatternExample2
     ///  2. The Concrete classes like Mallards should be put into either their own files, or their own class library.
     ///  3. The ways of quacking should be put into a single class library of Quacking methods
     ///  4. Where should the interface IQuack go?  This is a design decision you need to make!  Remember DER! (Debuggability, Readability, and Efficiency).
+    ///  5. There is one class improperly using naming conventions.  Find it and fix it.
     ///  
     /// </summary>
     public abstract class Duck

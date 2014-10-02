@@ -1,0 +1,119 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace StrategyPatternExample2
+{
+    /// <summary>
+    /// There is at least one type of duck: a mallard.  But we don't want to be constrained to a single duck, so the abstract class Duck contains all the things Duck does (which is, 
+    /// right now, only quacking.
+    /// 
+    /// The inspiration for this code was an implementation in C# of an example from Head First Design Patterns.  The implementation used was by Jesse C. Slicer on Stack Overflow
+    /// Source: http://codereview.stackexchange.com/questions/29384/strategy-pattern
+    /// 
+    /// 
+    /// Exercises to do:
+    ///  1. The abstract class Duck should be put into it's own file and referenced when necessary.
+    ///  2. The Concrete classes like Mallards should be put into either their own files, or their own class library.
+    ///  3. The ways of quacking should be put into a single class library of Quacking methods
+    ///  4. Where should the interface IQuack go?  This is a design decision you need to make!  Remember DER! (Debuggability, Readability, and Efficiency).
+    ///  
+    /// </summary>
+    public abstract class Duck
+    {
+        private readonly IQuack quackBehavior;
+
+        /// <summary>
+        /// basic powers that all ducks have.
+        /// </summary>
+        /// <param name="quackBehavior"></param>
+        protected Duck(IQuack quackBehavior)
+        {
+            this.quackBehavior = quackBehavior;
+        }
+
+        public void PerformQuack()
+        {
+            this.quackBehavior.Quack();
+        }
+
+        public int thirst { get; set; }
+    }
+
+    /////////////////  What follows are classes implementing the interface for quacking, and each class and interface could be given their own .cs file
+    public interface IQuack
+    {
+        void Quack();
+    }
+
+    public class RegularQuack : IQuack
+    {
+
+        public void Quack() { Console.WriteLine("This is a regular quack!"); }
+    }
+
+    public class AngryQuack : IQuack
+    {
+        public void Quack() { Console.WriteLine("Quack quack motherfucker!"); }
+    }
+
+    public class squeakyQuack : IQuack
+    {
+        public void Quack() { Console.WriteLine("slight squeak"); }
+    }
+    ////////////////////////////////////////
+
+    /////////////////  What follows are classes inheriting Duck, and each should be given their own .cs file.  These would be analogous to character types in an RPG.
+    public class Mallard : Duck
+    {
+
+        public Mallard() : base(new RegularQuack()) { 
+            this.thirst = 10; //the sub-classes comes with a default property that can be overridden- in this case the character could level-up, or get more thirsty, or less thirsty.
+        }
+    }
+
+    public class AngryMallard : Duck
+    {
+        public AngryMallard() : base(new AngryQuack()) { this.thirst = 15; } // another, terrible way to format code, but it's possible and convenient for small toy examples.
+    }
+
+    public class QuietMallard : Duck
+    {
+        public QuietMallard() : base(new squeakyQuack()) { this.thirst = 11; }
+    }
+    ////////////////////////////////////////////////////////////
+
+    /// <summary>
+    /// This was the default class "Program".  This is what you can use to test proper instantiation of your classes.
+    /// </summary>
+    class TestHarness
+    {
+        static void Main(string[] args)
+        {
+            Duck mallard = new Mallard();
+            Duck angryMallard = new AngryMallard();
+            Duck quietMallard = new QuietMallard();
+
+            mallard.PerformQuack();
+            mallard.thirst--; // properties can be incremented, decremented, and generally overridden as you see fit.  .thirst is from the abstract class.  This is where you add common properties among all ducks.
+            Console.WriteLine(mallard.thirst);
+
+            Console.ReadLine();
+
+            angryMallard.PerformQuack();
+            angryMallard.thirst++;
+            Console.WriteLine(angryMallard.thirst);
+
+            Console.ReadLine();
+
+            quietMallard.PerformQuack();
+            //quietMallard.thirst = 44; // in the definition for QuietMallard, it was set to 11.  Comment out this line to see that one can easily overrid that.
+            Console.WriteLine(quietMallard.thirst);
+
+            Console.ReadLine();
+
+        }
+    }
+}
